@@ -4,7 +4,6 @@ import random
 pygame.init()
 dis_width = 500
 dis_height = 500
-
 screen = pygame.display.set_mode([dis_width,dis_height])
 pygame.display.set_caption('Events')
 color = (255,255,255)
@@ -28,8 +27,8 @@ pac = pygame.image.load('pacman.png')
 pac = pygame.transform.scale(pac,(40,40))
 
 # setup timing variables
-clock = pygame.time.clock()
-last_move_item = pygame.time.get_ticks()
+clock = pygame.time.Clock()
+last_move_time = pygame.time.get_ticks()
 
 def draw_circle():
     pygame.draw.circle(screen,circle_color,[circle_x,circle_y],radius)
@@ -39,19 +38,19 @@ while True:
         if event == pygame.QUIT:
             pygame.quit()
             exit()
-        elif type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-        elif type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             # move the circle in the direction of the arrow key that is pressed
             if event.key == pygame.K_LEFT:
                 dx = -10
                 dy = 0
             elif event.key == pygame.K_RIGHT:
-                dx = +10
+                dx = 10
                 dy = 0
             elif event.key == pygame.K_DOWN:
                 dx = 0
-                dy = +10
+                dy = 10
             elif event.key == pygame.K_UP:
                 dx = 0
                 dy = -10
@@ -65,3 +64,18 @@ while True:
                 x = x1
                 y = y1
 
+    current_time = pygame.time.get_ticks()
+    if current_time - last_move_time > 5000:
+        circle_x = random.randint(0,dis_width)
+        circle_y = random.randint(0,dis_height)
+    
+        last_move_time = current_time
+
+    if x + 40 > circle_x > x -radius and y + 40 > circle_y > y-radius :
+        color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    screen.fill(color)
+    draw_circle()
+    screen.blit(pac,(x,y))
+    pygame.display.update()
+
+    
